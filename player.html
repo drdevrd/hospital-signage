@@ -50,7 +50,7 @@ let isPlayingOverride = false;
 function setStatus(text) { statusEl.textContent = text; }
 
 async function loadPlaylist() {
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('signage_items')
     .select('*')
     .eq('active', true)
@@ -101,7 +101,7 @@ function playNextInLoop() {
 }
 
 async function checkOverride() {
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from('signage_state')
     .select('override_item_id')
     .eq('id', 1)
@@ -127,7 +127,7 @@ async function checkOverride() {
 }
 
 // Realtime subscription (primary trigger)
-supabase
+sb
   .channel('signage_state_changes')
   .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'signage_state' }, () => {
     checkOverride();
